@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
-import { StretchTimer } from './timer';
-import { StatusBarUI } from './ui';
-import { VideoOverlay } from './overlay';
+import { createStretchTimer } from './timer';
+import { createStatusBarUI } from './ui';
+import { createVideoOverlay } from './overlay';
 
-let timer: StretchTimer;
-let statusBar: StatusBarUI;
-let overlay: VideoOverlay;
+let timer: ReturnType<typeof createStretchTimer>;
+let statusBar: ReturnType<typeof createStatusBarUI>;
+let overlay: ReturnType<typeof createVideoOverlay>;
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('🎉 JJ Stretch extension is now active!');
 	
-	timer = new StretchTimer();
-	statusBar = new StatusBarUI();
-	overlay = new VideoOverlay();
+	timer = createStretchTimer();
+	statusBar = createStatusBarUI();
+	overlay = createVideoOverlay();
 
 	timer.onTick((remainingMs) => {
 		statusBar.updateState('running', remainingMs);
@@ -55,10 +55,42 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('🔄 Stretch timer reset');
 	});
 
+	const setTimerIntervalCommand = vscode.commands.registerCommand('jj-stretch.setTimerInterval', async () => {
+		const config = vscode.workspace.getConfiguration('jj-stretch');
+		const currentInterval = config.get<number>('timerIntervalMinutes', 60);
+		
+		const input = await vscode.window.showInputBox({
+			prompt: 'Enter timer interval in minutes (1-480)',
+			value: currentInterval.toString(),
+			validateInput: (value: string) => {
+				const num = parseInt(value);
+				if (isNaN(num) || num < 1 || num > 480) {
+					return 'Please enter a number between 1 and 480';
+				}
+				return null;
+			}
+		});
+
+		if (input) {
+			const minutes = parseInt(input);
+			await config.update('timerIntervalMinutes', minutes, vscode.ConfigurationTarget.Global);
+			
+			// 현재 실행 중이면 새 설정으로 재시작
+			if (timer.getState() === 'running') {
+				timer.stop();
+				timer.start();
+				statusBar.updateState('running', timer.getRemainingTime());
+			}
+			
+			vscode.window.showInformationMessage(`⏱️ Timer interval set to ${minutes} minutes`);
+		}
+	});
+
 	context.subscriptions.push(
 		startTimerCommand,
 		stopTimerCommand, 
 		resetTimerCommand,
+		setTimerIntervalCommand,
 		statusBar
 	);
 

@@ -1,17 +1,18 @@
 import * as vscode from 'vscode';
 
-export class VideoOverlay {
-  private panel: vscode.WebviewPanel | undefined;
-  private onCloseCallback?: () => void;
+export function createVideoOverlay() {
+  let panel: vscode.WebviewPanel | undefined;
+  let onCloseCallback: (() => void) | undefined;
 
-  showStretchVideo(videoUrl: string, onClose?: () => void): void {
-    this.onCloseCallback = onClose;
-    if (this.panel) {
-      this.panel.reveal();
+  const showStretchVideo = (videoUrl: string, onClose?: () => void): void => {
+    onCloseCallback = onClose;
+    
+    if (panel) {
+      panel.reveal();
       return;
     }
 
-    this.panel = vscode.window.createWebviewPanel(
+    panel = vscode.window.createWebviewPanel(
       'stretchVideo',
       'Time to Stretch!',
       vscode.ViewColumn.One,
@@ -21,10 +22,10 @@ export class VideoOverlay {
       }
     );
 
-    this.panel.webview.html = this.getWebviewContent(videoUrl);
+    panel.webview.html = getWebviewContent(videoUrl);
 
     // 웹뷰에서 메시지 수신
-    this.panel.webview.onDidReceiveMessage(
+    panel.webview.onDidReceiveMessage(
       message => {
         switch (message.command) {
           case 'videoEnded':
@@ -32,7 +33,7 @@ export class VideoOverlay {
             break;
           case 'closeOverlay':
             console.log('Auto-closing stretch overlay');
-            this.close();
+            close();
             break;
           case 'videoError':
             console.error('Video error:', message.error);
@@ -43,27 +44,27 @@ export class VideoOverlay {
     );
 
     // 패널이 닫힐 때 정리
-    this.panel.onDidDispose(() => {
-      this.panel = undefined;
-      if (this.onCloseCallback) {
-        this.onCloseCallback();
+    panel.onDidDispose(() => {
+      panel = undefined;
+      if (onCloseCallback) {
+        onCloseCallback();
       }
     });
 
     // 전체화면으로 표시
     vscode.commands.executeCommand('workbench.action.maximizeEditor');
-  }
+  };
 
-  close(): void {
-    if (this.panel) {
-      this.panel.dispose();
-      this.panel = undefined;
+  const close = (): void => {
+    if (panel) {
+      panel.dispose();
+      panel = undefined;
     }
-  }
+  };
 
-  private getWebviewContent(videoUrl: string): string {
+  const getWebviewContent = (videoUrl: string): string => {
     // YouTube URL에서 video ID 추출
-    const videoId = this.extractVideoId(videoUrl);
+    const videoId = extractVideoId(videoUrl);
     
     return `
     <!DOCTYPE html>
@@ -121,24 +122,11 @@ export class VideoOverlay {
         <div class="container">
             <h1 class="title">🏃‍♂️ 스트레칭 타임!</h1>
             <div class="video-wrapper">
-                <div class="play-button" id="playButton" style="display: block;">
-                    <button onclick="startVideo()" style="
-                        background: #ff0000;
-                        color: white;
-                        border: none;
-                        padding: 20px 40px;
-                        font-size: 18px;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        margin-bottom: 20px;
-                    ">▶️ 스트레칭 영상 시작</button>
-                </div>
                 <iframe 
                     id="youtube-player"
-                    src="https://www.youtube.com/embed/${videoId}?controls=1&rel=0&modestbranding=1&enablejsapi=1"
+                    src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&enablejsapi=1"
                     allow="autoplay; encrypted-media"
-                    allowfullscreen
-                    style="display: none;">
+                    allowfullscreen>
                 </iframe>
             </div>
             <p class="message">건강한 코딩을 위해 잠시 스트레칭하세요! 💪</p>
@@ -156,24 +144,12 @@ export class VideoOverlay {
 
         <script>
             var player;
-            var skipTimer;
-            var videoStarted = false;
 
-            function startVideo() {
-                document.getElementById('playButton').style.display = 'none';
-                document.getElementById('youtube-player').style.display = 'block';
-                videoStarted = true;
-                
-                // YouTube API 로드
-                if (!window.YT) {
-                    var tag = document.createElement('script');
-                    tag.src = "https://www.youtube.com/iframe_api";
-                    var firstScriptTag = document.getElementsByTagName('script')[0];
-                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-                } else {
-                    onYouTubeIframeAPIReady();
-                }
-            }
+            // YouTube API 로드
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
             function skipVideo() {
                 let countdown = 5;
@@ -204,21 +180,14 @@ export class VideoOverlay {
             }
 
             window.onYouTubeIframeAPIReady = function() {
-                if (videoStarted) {
-                    player = new YT.Player('youtube-player', {
-                        events: {
-                            'onReady': onPlayerReady,
-                            'onStateChange': onPlayerStateChange,
-                            'onError': onPlayerError
-                        }
-                    });
-                }
+                player = new YT.Player('youtube-player', {
+                    events: {
+                        'onStateChange': onPlayerStateChange,
+                        'onError': onPlayerError
+                    }
+                });
             }
             
-            function onPlayerReady(event) {
-                event.target.playVideo();
-                console.log('Player ready and playing');
-            }
 
             function onPlayerStateChange(event) {
                 if (event.data == YT.PlayerState.ENDED) {
@@ -240,11 +209,16 @@ export class VideoOverlay {
         </script>
     </body>
     </html>`;
-  }
+  };
 
-  private extractVideoId(url: string): string {
+  const extractVideoId = (url: string): string => {
     // YouTube URL에서 video ID 추출
     const match = url.match(/(?:embed\/|v=|youtu\.be\/)([^&\n?#]+)/);
     return match ? match[1] : 'mnrKTIa1hZ0'; // 기본값
-  }
+  };
+
+  return {
+    showStretchVideo,
+    close
+  };
 }

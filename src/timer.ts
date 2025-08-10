@@ -1,20 +1,17 @@
 import * as vscode from 'vscode';
-import { TimerState, TimerConfig, TimerManager } from './types';
+import { TimerState, TimerConfig } from './types';
 
-export class StretchTimer implements TimerManager {
-  private state: TimerState = 'stopped';
-  private intervalId: NodeJS.Timeout | null = null;
-  private startTime: number = 0;
-  private targetDurationMs: number = 0;
+export function createStretchTimer() {
+  let state: TimerState = 'stopped';
+  let timeoutId: NodeJS.Timeout | null = null;
+  let startTime: number = 0;
+  let targetDurationMs: number = 0;
+  let lastTickTime: number = 0;
   
-  private onExpiredCallback?: () => void;
-  private onTickCallback?: (remainingMs: number) => void;
+  let onExpiredCallback: (() => void) | undefined;
+  let onTickCallback: ((remainingMs: number) => void) | undefined;
 
-  constructor() {
-    this.loadConfig();
-  }
-
-  private loadConfig(): TimerConfig {
+  const loadConfig = (): TimerConfig => {
     const config = vscode.workspace.getConfiguration('jj-stretch');
     const intervalMinutes = config.get<number>('timerIntervalMinutes', 60);
     const videoUrl = config.get<string>('stretchVideoUrl', '');
@@ -25,94 +22,116 @@ export class StretchTimer implements TimerManager {
       videoUrl,
       autoStart
     };
-  }
+  };
 
-  start(): void {
-    if (this.state === 'running') {
+  const tick = (): void => {
+    if (state !== 'running') {
       return;
     }
 
-    const config = this.loadConfig();
-    this.targetDurationMs = config.intervalMinutes * 60 * 1000;
-    this.startTime = Date.now();
-    this.state = 'running';
-
-    this.intervalId = setInterval(() => {
-      this.tick();
-    }, 1000);
-
-    console.log(`Timer started for ${config.intervalMinutes} minutes`);
-  }
-
-  stop(): void {
-    if (this.state === 'stopped') {
-      return;
-    }
-
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-
-    this.state = 'stopped';
-    console.log('Timer stopped');
-  }
-
-  reset(): void {
-    this.stop();
-    this.startTime = 0;
-    this.targetDurationMs = 0;
-    console.log('Timer reset');
-  }
-
-  private tick(): void {
-    if (this.state !== 'running') {
-      return;
-    }
-
-    const elapsed = Date.now() - this.startTime;
-    const remaining = Math.max(0, this.targetDurationMs - elapsed);
+    const now = Date.now();
+    const elapsed = now - startTime;
+    const remaining = Math.max(0, targetDurationMs - elapsed);
 
     if (remaining <= 0) {
-      this.state = 'expired';
-      this.stop();
+      state = 'expired';
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
       console.log('Timer expired!');
       
-      if (this.onExpiredCallback) {
-        this.onExpiredCallback();
+      if (onExpiredCallback) {
+        onExpiredCallback();
       }
     } else {
-      if (this.onTickCallback) {
-        this.onTickCallback(remaining);
+      if (onTickCallback) {
+        onTickCallback(remaining);
       }
+      
+      // 다음 초까지의 정확한 시간 계산
+      const nextSecond = Math.ceil(elapsed / 1000) * 1000;
+      const delay = Math.max(100, nextSecond - elapsed); // 최소 100ms
+      
+      timeoutId = setTimeout(tick, delay);
+      lastTickTime = now;
     }
-  }
+  };
 
-  getRemainingTime(): number {
-    if (this.state === 'stopped' || this.state === 'expired') {
+  const start = (): void => {
+    if (state === 'running') {
+      return;
+    }
+
+    const config = loadConfig();
+    targetDurationMs = config.intervalMinutes * 60 * 1000;
+    startTime = Date.now();
+    lastTickTime = startTime;
+    state = 'running';
+
+    // 첫 번째 tick을 즉시 호출하고 다음 스케줄링
+    tick();
+
+    console.log(`Timer started for ${config.intervalMinutes} minutes`);
+  };
+
+  const stop = (): void => {
+    if (state === 'stopped') {
+      return;
+    }
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+
+    state = 'stopped';
+    console.log('Timer stopped');
+  };
+
+  const reset = (): void => {
+    stop();
+    startTime = 0;
+    targetDurationMs = 0;
+    console.log('Timer reset');
+  };
+
+  const getRemainingTime = (): number => {
+    if (state === 'stopped' || state === 'expired') {
       return 0;
     }
 
-    const elapsed = Date.now() - this.startTime;
-    return Math.max(0, this.targetDurationMs - elapsed);
-  }
+    const elapsed = Date.now() - startTime;
+    return Math.max(0, targetDurationMs - elapsed);
+  };
 
-  getState(): TimerState {
-    return this.state;
-  }
+  const getState = (): TimerState => {
+    return state;
+  };
 
-  onExpired(callback: () => void): void {
-    this.onExpiredCallback = callback;
-  }
+  const onExpired = (callback: () => void): void => {
+    onExpiredCallback = callback;
+  };
 
-  onTick(callback: (remainingMs: number) => void): void {
-    this.onTickCallback = callback;
-  }
+  const onTick = (callback: (remainingMs: number) => void): void => {
+    onTickCallback = callback;
+  };
 
-  formatTime(ms: number): string {
+  const formatTime = (ms: number): string => {
     const totalSeconds = Math.ceil(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  }
+  };
+
+  return {
+    start,
+    stop,
+    reset,
+    getRemainingTime,
+    getState,
+    onExpired,
+    onTick,
+    formatTime
+  };
 }

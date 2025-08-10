@@ -1,71 +1,76 @@
 # JJ Stretch
 
-VSCode extension for healthy coding habits with stretch timer.
+A VSCode extension that promotes healthy coding habits by reminding you to take stretch breaks at regular intervals.
 
-## Features
+## Usage
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Commands
+Use `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux) to open command palette:
 
-For example if there is an image subfolder under your extension project workspace:
+- **Start Stretch Timer** - Starts the countdown timer
+- **Stop Stretch Timer** - Stops the running timer
+- **Reset Stretch Timer** - Resets timer to initial state and closes video overlay
+- **Set Timer Interval (Minutes)** - Opens input box to change timer duration
+  - Valid range: 1-480 minutes
+  - If timer is running, it will restart with new interval
+  - Setting is saved globally across all VSCode workspaces
 
-\!\[feature X\]\(images/feature-x.png\)
+### Status Bar
+The extension shows timer status in VSCode status bar:
+- `⏸️ Stretch Timer` - Click to start timer
+- `⏱️ 25:30` - Shows ㄱ time, click to stop
+- `🏃‍♂️ Time to Stretch!` - Timer expired, click to reset
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### How It Works
+1. Timer starts automatically when VSCode opens (default: 60 minutes)
+2. Countdown displays in status bar
+3. When timer reaches 0, a stretch video appears automatically
+4. Video plays muted with controls available
+5. After video ends or is closed, new timer cycle begins
 
-## Requirements
+## Settings
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### Quick Settings Access
+- Press `Cmd+,` (Mac) or `Ctrl+,` (Windows/Linux) to open settings
+- Search for "jj-stretch" to find all extension settings
 
-## Extension Settings
+### Available Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `jj-stretch.timerIntervalMinutes` | number | `60` | Timer duration in minutes (1-480) |
+| `jj-stretch.stretchVideoUrl` | string | Default video | YouTube embed URL for stretch video |
+| `jj-stretch.autoStart` | boolean | `true` | Auto-start timer when VSCode opens |
 
-For example:
+### JSON Configuration
+Add to your VSCode settings.json:
 
-This extension contributes the following settings:
+```json
+{
+  "jj-stretch.timerIntervalMinutes": 60,
+  "jj-stretch.stretchVideoUrl": "https://www.youtube.com/embed/mnrKTIa1hZ0?autoplay=1&controls=1&mute=1", 
+  "jj-stretch.autoStart": true
+}
+```
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+### Custom Video Setup
+To use your own stretch video:
+1. Find a YouTube video URL: `https://www.youtube.com/watch?v=VIDEO_ID`
+2. Convert to embed format: `https://www.youtube.com/embed/VIDEO_ID?autoplay=1&controls=1&mute=1`
+3. Update `stretchVideoUrl` setting with the embed URL
 
-## Known Issues
+### Settings Behavior
+- **Global Settings**: Changes apply to all VSCode workspaces
+- **Immediate Effect**: Most settings take effect immediately
+- **Timer Restart**: Changing interval while timer is running will restart with new duration
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Installation
 
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+1. Download the `.vsix` file
+2. Open VSCode
+3. Press `Ctrl+Shift+P` and run "Extensions: Install from VSIX..."
+4. Select the downloaded file
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Made by [jingjing2222](https://github.com/jingjing2222) 💪
