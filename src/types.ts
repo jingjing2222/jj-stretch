@@ -10,7 +10,7 @@ export interface TimerData {
   intervalMs: number;
 }
 
-export type TimerState = 'stopped' | 'running' | 'expired';
+export type TimerState = "stopped" | "running" | "expired";
 
 export interface TimerManager {
   start(): void;

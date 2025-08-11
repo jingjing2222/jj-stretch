@@ -14,25 +14,72 @@ let instance: ReturnType<typeof createStretchTimerInstance> | null = null;
 function createStretchTimerInstance(context: vscode.ExtensionContext) {
   const GLOBAL_STATE_KEY = "jj-stretch-timer-state";
   const instanceId = Math.random().toString(36).substring(7);
-  
+
   let timeoutId: NodeJS.Timeout | null = null;
+  let syncTimeoutId: NodeJS.Timeout | null = null;
   let onExpiredCallback: (() => void) | undefined;
   let onTickCallback: ((remainingMs: number) => void) | undefined;
 
   // 초기화 시 기존 타이머 상태 복원
-  const initializeTimer = (): void => {
+  const initializeTimer = (
+    statusBarCallback?: (state: TimerState, remainingMs?: number) => void,
+    overlayCallback?: () => void,
+    showMessageCallback?: (message: string) => void
+  ): void => {
     const globalState = getGlobalState();
+
     if (globalState.state === "running") {
       const now = Date.now();
       const elapsed = now - globalState.startTime;
       const remaining = Math.max(0, globalState.targetDurationMs - elapsed);
-      
+
       if (remaining <= 0) {
         // 이미 만료된 경우
         setGlobalState({ state: "expired" });
+        if (statusBarCallback) {
+          statusBarCallback("expired");
+        }
+        console.log("⏰ Restored expired timer");
+
+        // expired 상태에서 활성 인스턴스인 경우 overlay 표시
+        if (isActiveInstance() && overlayCallback) {
+          overlayCallback();
+        }
       } else {
-        // 아직 시간이 남은 경우 타이머 재시작
-        tick();
+        const updatedGlobalState = getGlobalState();
+        if (updatedGlobalState.activeInstanceId === instanceId) {
+          if (statusBarCallback) {
+            statusBarCallback("running", remaining);
+          }
+          console.log("🔄 Restored running timer");
+          tick();
+        }
+      }
+    } else if (globalState.state === "expired") {
+      if (statusBarCallback) {
+        statusBarCallback("expired");
+      }
+      console.log("⏰ Restored expired timer");
+
+      // expired 상태에서 활성 인스턴스인 경우 overlay 표시
+      if (isActiveInstance() && overlayCallback) {
+        overlayCallback();
+      }
+    } else {
+      // stopped 상태이고 autoStart가 활성화된 경우에만 새로 시작
+      const config = loadConfig();
+      if (config.autoStart) {
+        start();
+        if (statusBarCallback) {
+          statusBarCallback("running", getRemainingTime());
+        }
+        if (showMessageCallback) {
+          showMessageCallback("🎉 JJ Stretch auto-started!");
+        }
+      } else {
+        if (statusBarCallback) {
+          statusBarCallback("stopped");
+        }
       }
     }
   };
@@ -42,16 +89,16 @@ function createStretchTimerInstance(context: vscode.ExtensionContext) {
       state: "stopped" as TimerState,
       startTime: 0,
       targetDurationMs: 0,
-      lastUpdate: Date.now()
+      lastUpdate: Date.now(),
     });
   };
 
   const setGlobalState = (newState: Partial<GlobalTimerState>): void => {
     const currentState = getGlobalState();
-    const updatedState = { 
-      ...currentState, 
-      ...newState, 
-      lastUpdate: Date.now() 
+    const updatedState = {
+      ...currentState,
+      ...newState,
+      lastUpdate: Date.now(),
     };
     context.globalState.update(GLOBAL_STATE_KEY, updatedState);
   };
@@ -71,8 +118,13 @@ function createStretchTimerInstance(context: vscode.ExtensionContext) {
 
   const tick = (): void => {
     const globalState = getGlobalState();
-    
+
     if (globalState.state !== "running") {
+      return;
+    }
+
+    // 현재 인스턴스가 활성 인스턴스가 아니면 tick 실행하지 않음
+    if (globalState.activeInstanceId !== instanceId) {
       return;
     }
 
@@ -81,19 +133,15 @@ function createStretchTimerInstance(context: vscode.ExtensionContext) {
     const remaining = Math.max(0, globalState.targetDurationMs - elapsed);
 
     if (remaining <= 0) {
-      setGlobalState({ 
-        state: "expired",
-        activeInstanceId: instanceId 
-      });
+      setGlobalState({ state: "expired" });
       if (timeoutId) {
         clearTimeout(timeoutId);
         timeoutId = null;
       }
-      console.log("Timer expired!");
+      console.log(`Timer expired! (Active Instance: ${instanceId})`);
 
-      // 현재 인스턴스가 활성 인스턴스인 경우에만 콜백 실행
-      const currentGlobalState = getGlobalState();
-      if (currentGlobalState.activeInstanceId === instanceId && onExpiredCallback) {
+      // 활성 인스턴스이므로 항상 콜백 실행
+      if (onExpiredCallback) {
         onExpiredCallback();
       }
     } else {
@@ -123,7 +171,7 @@ function createStretchTimerInstance(context: vscode.ExtensionContext) {
       state: "running",
       startTime,
       targetDurationMs,
-      activeInstanceId: instanceId
+      activeInstanceId: instanceId,
     });
 
     // 첫 번째 tick을 즉시 호출하고 다음 스케줄링
@@ -152,7 +200,7 @@ function createStretchTimerInstance(context: vscode.ExtensionContext) {
     setGlobalState({
       state: "stopped",
       startTime: 0,
-      targetDurationMs: 0
+      targetDurationMs: 0,
     });
     console.log("Timer reset");
   };
@@ -193,14 +241,24 @@ function createStretchTimerInstance(context: vscode.ExtensionContext) {
 
   const claimActiveInstance = (): void => {
     const globalState = getGlobalState();
-    setGlobalState({
-      ...globalState,
-      activeInstanceId: instanceId
-    });
+    if (globalState.activeInstanceId !== instanceId) {
+      setGlobalState({
+        ...globalState,
+        activeInstanceId: instanceId,
+      });
+
+      // 활성 인스턴스가 되었고 타이머가 실행 중이면 tick 시작
+      if (globalState.state === "running") {
+        tick();
+      }
+    }
   };
 
-  // 인스턴스 생성 시 타이머 상태 복원
-  initializeTimer();
+  // activeInstanceId가 없으면 현재 인스턴스를 활성으로 설정
+  const globalState = getGlobalState();
+  if (!globalState.activeInstanceId) {
+    setGlobalState({ activeInstanceId: instanceId });
+  }
 
   return {
     start,
@@ -213,6 +271,7 @@ function createStretchTimerInstance(context: vscode.ExtensionContext) {
     formatTime,
     isActiveInstance,
     claimActiveInstance,
+    initializeTimer,
   };
 }
 
