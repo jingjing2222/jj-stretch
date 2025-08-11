@@ -1,8 +1,8 @@
 {
   "name": "jj-stretch",
-  "displayName": "JJ Stretch - Healthy Coding Timer",
+  "displayName": "jj-stretch",
   "description": "A VSCode extension that promotes healthy coding habits by reminding you to take stretch breaks at regular intervals with automatic stretch videos.",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "publisher": "jingjing2222",
   "repository": {
     "type": "git",
@@ -87,7 +87,8 @@
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "build": "vsce package --allow-star-activation"
   },
   "devDependencies": {
     "@types/vscode": "^1.93.1",
