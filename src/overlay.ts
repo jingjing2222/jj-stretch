@@ -1,4 +1,5 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import { resolveLocale } from "./language";
 
 export function createVideoOverlay() {
   let panel: vscode.WebviewPanel | undefined;
@@ -6,7 +7,7 @@ export function createVideoOverlay() {
 
   const showStretchVideo = (videoUrl: string, onClose?: () => void): void => {
     onCloseCallback = onClose;
-    
+
     if (panel) {
       panel.reveal();
       return;
@@ -65,10 +66,11 @@ export function createVideoOverlay() {
   const getWebviewContent = (videoUrl: string): string => {
     // YouTube URL에서 video ID 추출
     const videoId = extractVideoId(videoUrl);
-    
+    const { language, locale } = resolveLocale();
+
     return `
     <!DOCTYPE html>
-    <html lang="ko">
+    <html lang="${language}">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,7 +122,7 @@ export function createVideoOverlay() {
     </head>
     <body>
         <div class="container">
-            <h1 class="title">🏃‍♂️ 스트레칭 타임!</h1>
+            <h1 class="title">🏃‍♂️ ${locale.stretchingTime}</h1>
             <div class="video-wrapper">
                 <iframe 
                     id="youtube-player"
@@ -129,7 +131,7 @@ export function createVideoOverlay() {
                     allowfullscreen>
                 </iframe>
             </div>
-            <p class="message">건강한 코딩을 위해 잠시 스트레칭하세요! 💪</p>
+            <p class="message">${locale.takeMomentToStretch} 💪</p>
             <div style="margin-top: 20px;">
                 <button onclick="skipVideo()" style="
                     background: #666;
@@ -138,7 +140,7 @@ export function createVideoOverlay() {
                     padding: 10px 20px;
                     border-radius: 5px;
                     cursor: pointer;
-                ">건너뛰기 (5초)</button>
+                ">${locale.skip} (5${locale.seconds})</button>
             </div>
         </div>
 
@@ -157,12 +159,12 @@ export function createVideoOverlay() {
                 const originalText = button.textContent;
                 
                 button.disabled = true;
-                button.textContent = '건너뛰기 (' + countdown + ')';
+                button.textContent = '${locale.skip} (' + countdown + ')';
                 
                 const countdownInterval = setInterval(() => {
                     countdown--;
                     if (countdown > 0) {
-                        button.textContent = '건너뛰기 (' + countdown + ')';
+                        button.textContent = '${locale.skip} (' + countdown + ')';
                     } else {
                         clearInterval(countdownInterval);
                         closeVideo();
