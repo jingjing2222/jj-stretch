@@ -1,0 +1,32 @@
+{
+  "run": {
+    "command": "nx compile extension",
+    "startTime": "2025-12-14T15:14:39.499Z",
+    "endTime": "2025-12-14T15:14:41.934Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "webview:build",
+      "target": "build",
+      "projectName": "webview",
+      "hash": "13748670924108043364",
+      "startTime": "2025-12-14T15:14:39.534Z",
+      "endTime": "2025-12-14T15:14:39.538Z",
+      "params": "",
+      "cacheStatus": "local-cache-hit",
+      "status": 0
+    },
+    {
+      "taskId": "extension:compile",
+      "target": "compile",
+      "projectName": "extension",
+      "hash": "10940914053102873627",
+      "startTime": "2025-12-14T15:14:39.541Z",
+      "endTime": "2025-12-14T15:14:41.931Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    }
+  ]
+}

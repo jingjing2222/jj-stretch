@@ -10,7 +10,7 @@ let overlay: ReturnType<typeof createVideoOverlay>;
 export function activate(context: vscode.ExtensionContext) {
   timer = createStretchTimer(context);
   statusBar = createStatusBarUI();
-  overlay = createVideoOverlay();
+  overlay = createVideoOverlay(context);
 
   timer.onTick((remainingMs) => {
     statusBar.updateState("running", remainingMs);

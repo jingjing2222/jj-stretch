@@ -1,0 +1,26 @@
+Daemon process terminated and closed the connection
+
+Messages from the log:
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.759Z - Closed a connection. Number of open connections: 0
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.765Z - Established a connection. Number of open connections: 1
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.766Z - Closed a connection. Number of open connections: 0
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.766Z - Established a connection. Number of open connections: 1
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.773Z - Received raw message of length 32
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.773Z - Received json message of type REQUEST_PROJECT_GRAPH
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.773Z - [REQUEST]: Client Request for Project Graph Received
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.775Z - Time taken for 'loadSpecifiedNxPlugins' 1.3624580000000037ms
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.789Z - [WATCHER]: Processing file changes in outputs
+Time for 'plugin worker 42490 code loading' 2.4279589999999995
+Time for 'plugin worker 42492 code loading' 2.7107919999999996
+Time for 'plugin worker 42491 code loading' 2.7620839999999998
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.886Z - Started listening on: /private/var/folders/nf/vds5jkv503j_32x95f2my5_40000gn/T/50bb45bfbcc6a6591b6f/d.sock
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.888Z - [WATCHER]: Subscribed to changes within: /Users/kimhyeongjeong/Desktop/code/jj-stretch (native)
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.888Z - [NX-CONSOLE]: Pulling latest Nx (latest) to check console status...
+Fetching nx...
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.893Z - Closed a connection. Number of open connections: 0
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.893Z - [WATCHER]: Stopping the watcher for /Users/kimhyeongjeong/Desktop/code/jj-stretch (sources)
+[NX v22.2.3 Daemon Server] - 2025-12-14T15:16:25.893Z - [WATCHER]: Stopping the watcher for /Users/kimhyeongjeong/Desktop/code/jj-stretch (outputs)
+
+
+
+More information: /Users/kimhyeongjeong/Desktop/code/jj-stretch/.nx/workspace-data/d/daemon.log
