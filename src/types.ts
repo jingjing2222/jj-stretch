@@ -1,3 +1,10 @@
+export interface LocaleDictionary<T = string> {
+  seconds: T;
+  skip: T;
+  stretchingTime: T;
+  takeMomentToStretch: T;
+}
+
 export interface TimerConfig {
   intervalMinutes: number;
   videoUrl: string;
