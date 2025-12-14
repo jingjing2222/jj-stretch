@@ -1,6 +1,6 @@
-import { render } from 'preact'
-import './index.css'
-import { App } from './components/App'
+import { render } from "preact";
+import "./index.css";
+import { App } from "./components/App";
 
 declare global {
   interface Window {
@@ -10,7 +10,10 @@ declare global {
 }
 
 // Get video ID and language from window (injected by extension)
-const videoId = window.videoId || 'mnrKTIa1hZ0';
-const language = window.language || 'en';
+const videoId = window.videoId || "z-FI2mni_Nk";
+const language = window.language || "en";
 
-render(<App videoId={videoId} language={language} />, document.getElementById('app')!)
+render(
+  <App videoId={videoId} language={language} />,
+  document.getElementById("app")!
+);

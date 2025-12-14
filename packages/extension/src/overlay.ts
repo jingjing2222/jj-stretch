@@ -74,7 +74,12 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
     });
 
     // 전체화면으로 표시
-    vscode.commands.executeCommand("workbench.action.maximizeEditor");
+    vscode.commands.executeCommand("workbench.action.maximizeEditor").then(
+      () => {},
+      () => {
+        // Ignore if command doesn't exist
+      }
+    );
   };
 
   const close = (): void => {
@@ -97,9 +102,13 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
     const webviewPath = path.join(path.dirname(webviewPackagePath), "dist");
     const indexHtmlPath = path.join(webviewPath, "index.html");
 
+    console.log("Webview path:", webviewPath);
+    console.log("Index HTML path:", indexHtmlPath);
+
     // Read the built HTML file
     const fs = require("fs");
     let html = fs.readFileSync(indexHtmlPath, "utf8");
+    console.log("HTML loaded, length:", html.length);
 
     // Get URIs for assets
     const getUri = (filePath: string) => {
@@ -109,11 +118,11 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
 
     // Replace asset paths with webview URIs
     html = html.replace(
-      /(?:href|src)="(\/[^"]*)"/g,
-      (_match: string, p1: string) => {
-        const assetPath = p1.substring(1); // Remove leading slash
+      /((?:href|src)=")(\/[^"]*)"/g,
+      (_match: string, prefix: string, path: string) => {
+        const assetPath = path.substring(1); // Remove leading slash
         const uri = getUri(assetPath);
-        return p1.includes("href") ? `href="${uri}"` : `src="${uri}"`;
+        return `${prefix}${uri}"`;
       }
     );
 
@@ -127,6 +136,7 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
       <script type="module"`
     );
 
+    console.log("Final HTML preview:", html.substring(0, 500));
     return html;
   };
 

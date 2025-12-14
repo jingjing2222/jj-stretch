@@ -8,6 +8,12 @@ export default defineConfig({
     preact(),
     tailwindcss(),
   ],
+  resolve: {
+    alias: {
+      'react': 'preact/compat',
+      'react-dom': 'preact/compat'
+    }
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,

@@ -64,7 +64,7 @@
         },
         "jj-stretch.stretchVideoUrl": {
           "type": "string",
-          "default": "https://www.youtube.com/embed/mnrKTIa1hZ0?autoplay=1&controls=1",
+          "default": "https://www.youtube.com/watch?v=z-FI2mni_Nk",
           "description": "유튜브 스트레칭 영상 URL (embed 형식)"
         },
         "jj-stretch.autoStart": {
@@ -116,12 +116,20 @@
   "nx": {
     "targets": {
       "build": {
-        "dependsOn": ["^build"],
-        "outputs": ["{projectRoot}/dist"]
+        "dependsOn": [
+          "^build"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ]
       },
       "compile": {
-        "dependsOn": ["^build"],
-        "outputs": ["{projectRoot}/dist"]
+        "dependsOn": [
+          "^build"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ]
       }
     }
   }

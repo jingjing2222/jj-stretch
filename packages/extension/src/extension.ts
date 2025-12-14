@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
       const config = vscode.workspace.getConfiguration("jj-stretch");
       const videoUrl = config.get<string>(
         "stretchVideoUrl",
-        "https://www.youtube.com/embed/mnrKTIa1hZ0?autoplay=1&controls=1"
+        "https://www.youtube.com/watch?v=z-FI2mni_Nk"
       );
 
       overlay.showStretchVideo(videoUrl, () => {
@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
       const config = vscode.workspace.getConfiguration("jj-stretch");
       const videoUrl = config.get<string>(
         "stretchVideoUrl",
-        "https://www.youtube.com/embed/mnrKTIa1hZ0?autoplay=1&controls=1"
+        "https://www.youtube.com/watch?v=z-FI2mni_Nk"
       );
 
       overlay.showStretchVideo(videoUrl, () => {
