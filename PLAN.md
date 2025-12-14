@@ -80,7 +80,7 @@ jj-stretch/
   },
   "jj-stretch.stretchVideoUrl": {
     "type": "string",
-    "default": "https://www.youtube.com/watch?v=z-FI2mni_Nk",
+    "default": "https://www.youtube.com/embed/z-FI2mni_Nk",
     "description": "유튜브 스트레칭 영상 URL (embed 형식)"
   },
   "jj-stretch.autoStart": {

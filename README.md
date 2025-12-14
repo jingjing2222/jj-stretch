@@ -54,7 +54,7 @@ Add to your VSCode settings.json:
 ```json
 {
   "jj-stretch.timerIntervalMinutes": 60,
-  "jj-stretch.stretchVideoUrl": "https://www.youtube.com/watch?v=z-FI2mni_Nk",
+  "jj-stretch.stretchVideoUrl": "https://www.youtube.com/embed/z-FI2mni_Nk",
   "jj-stretch.autoStart": true
 }
 ```
