@@ -2,7 +2,7 @@
   "name": "jj-stretch",
   "displayName": "jj-stretch",
   "description": "A VSCode extension that promotes healthy coding habits by reminding you to take stretch breaks at regular intervals with automatic stretch videos.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publisher": "jingjing2222",
   "repository": {
     "type": "git",
@@ -77,11 +77,11 @@
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
-    "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+    "compile": "pnpm run check-types && pnpm run lint && tsx esbuild.ts",
     "watch": "npm-run-all -p watch:*",
-    "watch:esbuild": "node esbuild.js --watch",
+    "watch:esbuild": "tsx esbuild.ts --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+    "package": "pnpm run check-types && pnpm run lint && tsx esbuild.ts --production",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
@@ -91,17 +91,18 @@
     "build": "vsce package --allow-star-activation"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
+    "@types/vscode": "^1.93.1",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
-    "eslint": "^9.32.0",
-    "esbuild": "^0.25.8",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^5.9.2",
     "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.25.8",
+    "eslint": "^9.32.0",
+    "npm-run-all": "^4.1.5",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.2"
   },
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }
