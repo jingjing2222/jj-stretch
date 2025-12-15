@@ -1,0 +1,23 @@
+.vscode/**
+.vscode-test/**
+out/**
+src/**
+.gitignore
+.yarnrc
+esbuild.js
+esbuild.ts
+vsc-extension-quickstart.md
+**/tsconfig.json
+**/eslint.config.mjs
+**/*.map
+**/*.ts
+**/.vscode-test.*
+
+# Include only webview dist
+!node_modules/webview/dist/**
+node_modules/webview/**
+!node_modules/webview/dist
+
+# Exclude other node_modules
+node_modules/**
+!node_modules/webview

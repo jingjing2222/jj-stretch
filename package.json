@@ -1,113 +1,21 @@
 {
-  "name": "jj-stretch",
-  "displayName": "jj-stretch",
-  "description": "A VSCode extension that promotes healthy coding habits by reminding you to take stretch breaks at regular intervals with automatic stretch videos.",
+  "name": "jj-stretch-monorepo",
   "version": "1.0.5",
-  "publisher": "jingjing2222",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jingjing2222/jj-stretch"
-  },
-  "bugs": {
-    "url": "https://github.com/jingjing2222/jj-stretch/issues"
-  },
-  "homepage": "https://github.com/jingjing2222/jj-stretch#readme",
-  "keywords": [
-    "health",
-    "stretch",
-    "timer",
-    "productivity",
-    "wellness",
-    "break",
-    "exercise",
-    "pomodoro"
-  ],
-  "engines": {
-    "vscode": "^1.93.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "icon": "icon.png",
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "jj-stretch.startTimer",
-        "title": "Start Stretch Timer"
-      },
-      {
-        "command": "jj-stretch.stopTimer",
-        "title": "Stop Stretch Timer"
-      },
-      {
-        "command": "jj-stretch.resetTimer",
-        "title": "Reset Stretch Timer"
-      },
-      {
-        "command": "jj-stretch.setTimerInterval",
-        "title": "Set Timer Interval (Minutes)"
-      }
-    ],
-    "configuration": {
-      "title": "JJ Stretch",
-      "properties": {
-        "jj-stretch.timerIntervalMinutes": {
-          "type": "number",
-          "default": 60,
-          "minimum": 1,
-          "maximum": 480,
-          "description": "타이머 간격 (분 단위)"
-        },
-        "jj-stretch.stretchVideoUrl": {
-          "type": "string",
-          "default": "https://www.youtube.com/embed/mnrKTIa1hZ0?autoplay=1&controls=1",
-          "description": "유튜브 스트레칭 영상 URL (embed 형식)"
-        },
-        "jj-stretch.autoStart": {
-          "type": "boolean",
-          "default": true,
-          "description": "VSCode 열 때 자동으로 타이머 시작"
-        }
-      }
-    }
-  },
+  "private": true,
+  "description": "JJ Stretch VSCode Extension - Monorepo",
   "scripts": {
-    "vscode:prepublish": "pnpm run package",
-    "compile": "pnpm run check-types && pnpm run lint && tsx esbuild.ts",
-    "watch": "npm-run-all -p watch:*",
-    "watch:esbuild": "tsx esbuild.ts --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "pnpm run check-types && pnpm run lint && tsx esbuild.ts --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "check-types": "tsc --noEmit",
-    "lint": "eslint src",
-    "test": "vscode-test",
-    "build": "vsce package --allow-star-activation",
-    "publish:vsce": "vsce publish --no-dependencies",
-    "publish:ovsx": "ovsx publish --no-dependencies",
-    "publish": "pnpm run package && pnpm run publish:vsce && pnpm run publish:ovsx"
+    "build": "nx run-many -t build",
+    "build:webview": "nx build webview",
+    "build:extension": "nx build jj-stretch",
+    "compile": "nx compile jj-stretch",
+    "dev:webview": "pnpm --filter webview dev",
+    "watch:extension": "pnpm --filter jj-stretch watch",
+    "package": "nx compile jj-stretch && pnpm --filter jj-stretch build",
+    "publish": "pnpm package && pnpm --filter jj-stretch publish"
   },
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977",
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "@types/vscode": "^1.93.1",
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "@typescript-eslint/parser": "^8.39.0",
-    "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.7.1",
-    "esbuild": "^0.25.8",
-    "eslint": "^9.32.0",
-    "npm-run-all": "^4.1.5",
-    "ovsx": "^0.10.7",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.2"
-  },
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+    "@nx/js": "^22.2.3",
+    "nx": "^22.2.3"
+  }
 }

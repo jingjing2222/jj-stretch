@@ -48,6 +48,7 @@ The extension shows timer status in VSCode status bar:
 ### Stretch Guide
 
 The character will guide you through:
+
 1. **Left stretches (3 times)**: Lean your upper body to the left
 2. **Right stretches (3 times)**: Lean your upper body to the right
 
@@ -94,6 +95,7 @@ Add to your VSCode settings.json:
 ## Why Stretch?
 
 Regular stretching breaks can help:
+
 - Reduce eye strain and fatigue
 - Prevent muscle tension and back pain
 - Improve circulation
