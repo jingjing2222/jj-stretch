@@ -1,6 +1,6 @@
 {
   "name": "webview",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "main": "./dist/index.html",
   "files": [
@@ -16,15 +16,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "preact": "^10.27.2",
-    "react-player": "^3.4.0"
+    "preact": "^10.27.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.2",
     "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "vite": "^7.2.4"

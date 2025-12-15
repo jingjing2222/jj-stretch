@@ -9,6 +9,13 @@ export interface Locale {
   errorSolutionChangeVideo: string;
   errorSolutionSetting: string;
   errorSolutionUseEmbeddable: string;
+  stretchLeft1: string;
+  stretchLeft2: string;
+  stretchLeft3: string;
+  stretchRight1: string;
+  stretchRight2: string;
+  stretchRight3: string;
+  skippedMessage: string;
 }
 
 export const locales: Record<string, Locale> = {
@@ -22,7 +29,14 @@ export const locales: Record<string, Locale> = {
     errorSolutionTitle: "해결 방법:",
     errorSolutionChangeVideo: "VSCode 설정에서 다른 스트레칭 영상 URL로 변경해주세요",
     errorSolutionSetting: "설정 수정",
-    errorSolutionUseEmbeddable: "임베딩이 허용된 유튜브 영상을 선택해주세요"
+    errorSolutionUseEmbeddable: "임베딩이 허용된 유튜브 영상을 선택해주세요",
+    stretchLeft1: "좌측으로 기울이기! (1/6)",
+    stretchLeft2: "좌측으로 더! (2/6)",
+    stretchLeft3: "좌측 끝! (3/6)",
+    stretchRight1: "우측으로 기울이기! (4/6)",
+    stretchRight2: "우측으로 더! (5/6)",
+    stretchRight3: "우측 끝! (6/6) 잘했어요!",
+    skippedMessage: "아쉬워요... 다음엔 꼭 해봐요!"
   },
   en: {
     seconds: " seconds",
@@ -34,7 +48,14 @@ export const locales: Record<string, Locale> = {
     errorSolutionTitle: "Solution:",
     errorSolutionChangeVideo: "Change the stretch video URL in VSCode settings",
     errorSolutionSetting: "jj-stretch.stretchVideoUrl",
-    errorSolutionUseEmbeddable: "Please select a YouTube video that allows embedding"
+    errorSolutionUseEmbeddable: "Please select a YouTube video that allows embedding",
+    stretchLeft1: "Lean left! (1/6)",
+    stretchLeft2: "More left! (2/6)",
+    stretchLeft3: "Left done! (3/6)",
+    stretchRight1: "Lean right! (4/6)",
+    stretchRight2: "More right! (5/6)",
+    stretchRight3: "Right done! (6/6) Great!",
+    skippedMessage: "See you next time..."
   }
 };
 

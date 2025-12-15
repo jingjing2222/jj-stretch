@@ -1,19 +1,18 @@
 import { render } from "preact";
 import "./index.css";
 import { App } from "./components/App";
+import type { VSCodeAPI } from "./types";
 
 declare global {
   interface Window {
-    videoId?: string;
     language?: string;
   }
 }
 
-// Get video ID and language from window (injected by extension)
-const videoId = window.videoId || "z-FI2mni_Nk";
+// VSCode API는 한 번만 호출
+const vscode: VSCodeAPI | undefined =
+  typeof acquireVsCodeApi !== "undefined" ? acquireVsCodeApi() : undefined;
+
 const language = window.language || "en";
 
-render(
-  <App videoId={videoId} language={language} />,
-  document.getElementById("app")!
-);
+render(<App language={language} vscode={vscode} />, document.getElementById("app")!);

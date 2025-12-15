@@ -1,27 +1,51 @@
 import { useState, useEffect } from "preact/hooks";
 import { MatrixBackground } from "./MatrixBackground";
-import { VideoPlayer } from "./VideoPlayer";
-import { ErrorMessage } from "./ErrorMessage";
+import { StretchAnimation } from "./StretchAnimation";
 import { locales, matrixChars } from "../i18n/locales";
 import { getRandomMeme } from "../utils/memes";
 import type { VSCodeAPI } from "../types";
 
 interface AppProps {
-  videoId: string;
   language: string;
+  vscode?: VSCodeAPI;
 }
 
-export function App({ videoId, language }: AppProps) {
+export function App({ language, vscode }: AppProps) {
   const locale = locales[language] || locales.en;
-  const meme = getRandomMeme(language);
   const chars = matrixChars[language] || matrixChars.en;
 
-  const [errorCode, setErrorCode] = useState<number | null>(null);
   const [skipCountdown, setSkipCountdown] = useState<number | null>(null);
+  const [isSkipped, setIsSkipped] = useState(false);
+  const [autoCloseCountdown, setAutoCloseCountdown] = useState(15);
+  const [meme, setMeme] = useState(getRandomMeme(language));
 
-  const vscode: VSCodeAPI | undefined =
-    typeof acquireVsCodeApi !== "undefined" ? acquireVsCodeApi() : undefined;
+  // Change meme every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMeme(getRandomMeme(language));
+    }, 3000);
 
+    return () => clearInterval(interval);
+  }, [language]);
+
+  // Auto close after 15 seconds
+  useEffect(() => {
+    // Skip countdown이 활성화되면 auto close를 멈춤
+    if (skipCountdown !== null) return;
+
+    if (autoCloseCountdown === 0) {
+      closeVideo();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setAutoCloseCountdown(autoCloseCountdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [autoCloseCountdown, skipCountdown]);
+
+  // Skip countdown
   useEffect(() => {
     if (skipCountdown === null) return;
 
@@ -37,18 +61,6 @@ export function App({ videoId, language }: AppProps) {
     return () => clearTimeout(timer);
   }, [skipCountdown]);
 
-  const handleVideoError = (code: number) => {
-    setErrorCode(code);
-    vscode?.postMessage({
-      command: "videoError",
-      error: code,
-    });
-  };
-
-  const handleVideoEnded = () => {
-    closeVideo();
-  };
-
   const closeVideo = () => {
     vscode?.postMessage({
       command: "closeOverlay",
@@ -56,17 +68,11 @@ export function App({ videoId, language }: AppProps) {
   };
 
   const handleSkip = () => {
-    if (errorCode) {
-      closeVideo();
-    } else {
-      setSkipCountdown(3);
-    }
+    setIsSkipped(true);
+    setSkipCountdown(3);
   };
 
   const getSkipButtonText = () => {
-    if (errorCode) {
-      return "$ Close --now";
-    }
     if (skipCountdown !== null) {
       return `$ ${locale.skip} --wait ${skipCountdown}s`;
     }
@@ -88,21 +94,21 @@ export function App({ videoId, language }: AppProps) {
           {meme}
         </div>
 
-        <div className={errorCode ? "opacity-30" : ""}>
-          <VideoPlayer
-            videoId={videoId}
-            onError={handleVideoError}
-            onEnded={handleVideoEnded}
-          />
+        <div className="my-8">
+          <StretchAnimation isSkipped={isSkipped} locale={locale} />
         </div>
 
-        <ErrorMessage errorCode={errorCode} locale={locale} />
-
-        {!errorCode && (
-          <p className="text-[#00ff00] mt-6.25 text-[1.3rem] drop-shadow-[0_0_5px_rgba(0,255,0,0.5)]">
-            {locale.takeMomentToStretch} 💪
+        {!isSkipped && (
+          <p className="text-[#00ff00] mt-4 text-[1.3rem] drop-shadow-[0_0_5px_rgba(0,255,0,0.5)]">
+            {locale.takeMomentToStretch}
           </p>
         )}
+
+        <div className="mt-6 text-[#00d9ff] text-[1.1rem]">
+          {skipCountdown === null
+            ? `Auto close in ${autoCloseCountdown}s`
+            : `Closing in ${skipCountdown}s...`}
+        </div>
 
         <button
           onClick={handleSkip}

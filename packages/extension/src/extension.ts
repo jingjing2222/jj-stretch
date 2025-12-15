@@ -10,7 +10,7 @@ let overlay: ReturnType<typeof createVideoOverlay>;
 export function activate(context: vscode.ExtensionContext) {
   timer = createStretchTimer(context);
   statusBar = createStatusBarUI();
-  overlay = createVideoOverlay(context);
+  overlay = createVideoOverlay();
 
   timer.onTick((remainingMs) => {
     statusBar.updateState("running", remainingMs);
@@ -22,12 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
     // 현재 인스턴스가 활성 인스턴스인 경우에만 overlay 표시
     if (timer.isActiveInstance()) {
       const config = vscode.workspace.getConfiguration("jj-stretch");
-      const videoUrl = config.get<string>(
-        "stretchVideoUrl",
-        "https://www.youtube.com/embed/z-FI2mni_Nk"
-      );
 
-      overlay.showStretchVideo(videoUrl, () => {
+      overlay.showStretchOverlay(() => {
         // 웹뷰가 닫히면 타이머 재시작
         timer.reset();
         const autoStart = config.get<boolean>("autoStart", true);
@@ -48,12 +44,8 @@ export function activate(context: vscode.ExtensionContext) {
     () => {
       // expired 상태에서 overlay 표시
       const config = vscode.workspace.getConfiguration("jj-stretch");
-      const videoUrl = config.get<string>(
-        "stretchVideoUrl",
-        "https://www.youtube.com/embed/z-FI2mni_Nk"
-      );
 
-      overlay.showStretchVideo(videoUrl, () => {
+      overlay.showStretchOverlay(() => {
         timer.reset();
         const autoStart = config.get<boolean>("autoStart", true);
         if (autoStart) {

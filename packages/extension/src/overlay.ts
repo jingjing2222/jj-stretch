@@ -2,11 +2,11 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { resolveLocale } from "./language";
 
-export function createVideoOverlay(context: vscode.ExtensionContext) {
+export function createVideoOverlay() {
   let panel: vscode.WebviewPanel | undefined;
   let onCloseCallback: (() => void) | undefined;
 
-  const showStretchVideo = (videoUrl: string, onClose?: () => void): void => {
+  const showStretchOverlay = (onClose?: () => void): void => {
     onCloseCallback = onClose;
 
     if (panel) {
@@ -19,7 +19,7 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
     const webviewDistPath = path.join(path.dirname(webviewPackagePath), "dist");
 
     panel = vscode.window.createWebviewPanel(
-      "stretchVideo",
+      "stretchOverlay",
       "Time to Stretch!",
       vscode.ViewColumn.One,
       {
@@ -29,38 +29,14 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
       }
     );
 
-    panel.webview.html = getWebviewContent(panel.webview, videoUrl);
+    panel.webview.html = getWebviewContent(panel.webview);
 
     // 웹뷰에서 메시지 수신
     panel.webview.onDidReceiveMessage((message) => {
       switch (message.command) {
-        case "videoEnded":
-          console.log("Stretch video ended");
-          break;
         case "closeOverlay":
-          console.log("Auto-closing stretch overlay");
+          console.log("Closing stretch overlay");
           close();
-          break;
-        case "videoError":
-          console.error("Video error:", message.error);
-          const errorCode = message.error;
-          let errorMsg = "스트레칭 영상을 로드할 수 없습니다.";
-
-          if (errorCode === 150 || errorCode === 101 || errorCode === 100) {
-            errorMsg =
-              '이 영상은 임베딩이 제한되어 있습니다. VSCode 설정에서 "jj-stretch.stretchVideoUrl"을 임베딩 가능한 다른 영상으로 변경해주세요.';
-          }
-
-          vscode.window
-            .showWarningMessage(errorMsg, "설정 열기")
-            .then((selection) => {
-              if (selection === "설정 열기") {
-                vscode.commands.executeCommand(
-                  "workbench.action.openSettings",
-                  "jj-stretch.stretchVideoUrl"
-                );
-              }
-            });
           break;
       }
     });
@@ -89,12 +65,7 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
     }
   };
 
-  const getWebviewContent = (
-    webview: vscode.Webview,
-    videoUrl: string
-  ): string => {
-    // YouTube URL에서 video ID 추출
-    const videoId = extractVideoId(videoUrl);
+  const getWebviewContent = (webview: vscode.Webview): string => {
     const { language } = resolveLocale();
 
     // webview 패키지의 dist 폴더 찾기
@@ -130,24 +101,17 @@ export function createVideoOverlay(context: vscode.ExtensionContext) {
     html = html.replace(
       '<script type="module"',
       `<script>
-        window.videoId = '${videoId}';
         window.language = '${language}';
       </script>
       <script type="module"`
     );
 
-    console.log("Final HTML preview:", html.substring(0, 500));
+    console.log("Final HTML preview:", html.substring(0, 5000));
     return html;
   };
 
-  const extractVideoId = (url: string): string => {
-    // YouTube URL에서 video ID 추출
-    const match = url.match(/(?:embed\/|v=|youtu\.be\/)([^&\n?#]+)/);
-    return match ? match[1] : "mnrKTIa1hZ0"; // 기본값
-  };
-
   return {
-    showStretchVideo,
+    showStretchOverlay,
     close,
   };
 }
