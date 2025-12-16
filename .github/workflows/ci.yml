@@ -1,0 +1,31 @@
+name: Publish Extension
+
+on:
+  pull_request:
+    branch:
+      - "main"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Get version
+        id: version
+        run: echo "version=$(node -p "require('./packages/extension/package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Build and package extension (webview + extension)
+        run: pnpm package
