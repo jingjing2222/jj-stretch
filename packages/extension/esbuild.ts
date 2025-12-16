@@ -1,7 +1,23 @@
 import * as esbuild from "esbuild";
+import * as fs from "fs";
+import * as path from "path";
 
 const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
+
+function copyWebviewDist() {
+  const webviewSrc = path.resolve(__dirname, "../webview/dist");
+  const webviewDest = path.resolve(__dirname, "dist/webview");
+
+  // Remove existing webview folder
+  if (fs.existsSync(webviewDest)) {
+    fs.rmSync(webviewDest, { recursive: true, force: true });
+  }
+
+  // Copy webview dist to extension dist
+  fs.cpSync(webviewSrc, webviewDest, { recursive: true });
+  console.log("✓ Copied webview dist to extension/dist/webview");
+}
 
 const esbuildProblemMatcherPlugin: esbuild.Plugin = {
   name: "esbuild-problem-matcher",
@@ -20,6 +36,9 @@ const esbuildProblemMatcherPlugin: esbuild.Plugin = {
         }
       });
       console.log("[watch] build finished");
+
+      // Copy webview dist after build
+      copyWebviewDist();
     });
   },
 };
@@ -34,7 +53,7 @@ async function main() {
     sourcesContent: false,
     platform: "node",
     outfile: "dist/extension.js",
-    external: ["vscode", "webview"],
+    external: ["vscode"],
     logLevel: "silent",
     plugins: [
       /* add to the end of plugins array */

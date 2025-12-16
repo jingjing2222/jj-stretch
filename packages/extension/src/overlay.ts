@@ -15,8 +15,7 @@ export function createVideoOverlay() {
     }
 
     // webview 패키지의 dist 폴더 경로
-    const webviewPackagePath = require.resolve("webview/package.json");
-    const webviewDistPath = path.join(path.dirname(webviewPackagePath), "dist");
+    const webviewDistPath = path.join(__dirname, "webview");
 
     panel = vscode.window.createWebviewPanel(
       "stretchOverlay",
@@ -69,8 +68,7 @@ export function createVideoOverlay() {
     const { language } = resolveLocale();
 
     // webview 패키지의 dist 폴더 찾기
-    const webviewPackagePath = require.resolve("webview/package.json");
-    const webviewPath = path.join(path.dirname(webviewPackagePath), "dist");
+    const webviewPath = path.join(__dirname, "webview");
     const indexHtmlPath = path.join(webviewPath, "index.html");
 
     console.log("Webview path:", webviewPath);
