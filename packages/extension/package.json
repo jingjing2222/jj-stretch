@@ -60,12 +60,12 @@
           "default": 60,
           "minimum": 1,
           "maximum": 480,
-          "description": "타이머 간격 (분 단위)"
+          "description": "intervals of timers (Minutes)"
         },
         "jj-stretch.autoStart": {
           "type": "boolean",
           "default": true,
-          "description": "VSCode 열 때 자동으로 타이머 시작"
+          "description": "auto start when open vscode or cursor"
         }
       }
     }
