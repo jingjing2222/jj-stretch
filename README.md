@@ -48,6 +48,7 @@ The extension shows timer status in VSCode status bar:
 ### Stretch Guide
 
 The character will guide you through:
+
 1. **Left stretches (3 times)**: Lean your upper body to the left
 2. **Right stretches (3 times)**: Lean your upper body to the right
 
@@ -66,6 +67,7 @@ Total stretch time: 15 seconds
 | --------------------------------- | ------- | ------- | ---------------------------------- |
 | `jj-stretch.timerIntervalMinutes` | number  | `60`    | Timer duration in minutes (1-480)  |
 | `jj-stretch.autoStart`            | boolean | `true`  | Auto-start timer when VSCode opens |
+| `jj-stretch.nyancatEnabled`       | boolean | `true`  | Set Showing nyanCat                |
 
 ### JSON Configuration
 
@@ -74,7 +76,8 @@ Add to your VSCode settings.json:
 ```json
 {
   "jj-stretch.timerIntervalMinutes": 60,
-  "jj-stretch.autoStart": true
+  "jj-stretch.autoStart": true,
+  "jj-stretch.nyancatEnabled": true
 }
 ```
 
@@ -94,6 +97,7 @@ Add to your VSCode settings.json:
 ## Why Stretch?
 
 Regular stretching breaks can help:
+
 - Reduce eye strain and fatigue
 - Prevent muscle tension and back pain
 - Improve circulation

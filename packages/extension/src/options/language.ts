@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { LocaleDictionary } from "./types";
+import { LocaleDictionary } from "../types";
 
 type LocalesConfig = Record<string, LocaleDictionary>;
 

@@ -90,6 +90,57 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  const nyanCatEnabledCommand = vscode.commands.registerCommand(
+    "jj-stretch.nyancatEnabled",
+    async () => {
+      const config = vscode.workspace.getConfiguration("jj-stretch");
+      const currentValue = config.get<boolean>("nyancatEnabled", true);
+
+      type NyanPickItem = vscode.QuickPickItem & {
+        value: boolean;
+      };
+
+      const pick = vscode.window.createQuickPick<NyanPickItem>();
+
+      pick.title = "Nyan Cat Enabled";
+      pick.canSelectMany = false;
+
+      pick.items = [
+        {
+          label: "Enable 🐱",
+          value: true,
+          picked: currentValue === true,
+        },
+        {
+          label: "Disable 🚫",
+          value: false,
+          picked: currentValue === false,
+        },
+      ];
+
+      pick.onDidAccept(async () => {
+        const selected = pick.selectedItems[0];
+        if (!selected) {
+          return;
+        }
+
+        await config.update(
+          "nyancatEnabled",
+          selected.value,
+          vscode.ConfigurationTarget.Global
+        );
+
+        pick.hide();
+      });
+
+      pick.onDidHide(() => {
+        pick.dispose();
+      });
+
+      pick.show();
+    }
+  );
+
   const setTimerIntervalCommand = vscode.commands.registerCommand(
     "jj-stretch.setTimerInterval",
     async () => {
@@ -165,6 +216,7 @@ export function activate(context: vscode.ExtensionContext) {
     resetTimerCommand,
     setTimerIntervalCommand,
     claimTimerCommand,
+    nyanCatEnabledCommand,
     statusBar,
     onDidChangeWindowState
   );

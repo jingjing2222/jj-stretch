@@ -50,6 +50,10 @@
       {
         "command": "jj-stretch.setTimerInterval",
         "title": "Set Timer Interval (Minutes)"
+      },
+      {
+        "command": "jj-stretch.nyancatEnabled",
+        "title": "Set NyanCat Enabled!"
       }
     ],
     "configuration": {
@@ -66,6 +70,11 @@
           "type": "boolean",
           "default": true,
           "description": "auto start when open vscode or cursor"
+        },
+        "jj-stretch.nyancatEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "set nyanCat enabled"
         }
       }
     }
