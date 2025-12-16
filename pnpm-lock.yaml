@@ -16,6 +16,10 @@ importers:
         version: 22.2.3
 
   packages/extension:
+    dependencies:
+      webview:
+        specifier: workspace:*
+        version: link:../webview
     devDependencies:
       '@types/mocha':
         specifier: ^10.0.10
