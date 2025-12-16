@@ -1,6 +1,7 @@
 {
   "name": "webview",
   "version": "1.0.9",
+  "private": true,
   "type": "module",
   "main": "./dist/index.html",
   "scripts": {
