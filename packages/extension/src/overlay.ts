@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { resolveLocale } from "./language";
+import { resolveLocale } from "./options/language";
+import { isNyanCatEnabled } from "./options/nyancat";
 
 export function createVideoOverlay() {
   let panel: vscode.WebviewPanel | undefined;
@@ -48,6 +49,18 @@ export function createVideoOverlay() {
       }
     });
 
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("jj-stretch.nyancatEnabled")) {
+        const config = vscode.workspace.getConfiguration("jj-stretch");
+        const nyanCatEnabled = config.get<boolean>("nyancatEnabled", true);
+
+        panel?.webview.postMessage({
+          type: "config:update",
+          nyanCatEnabled,
+        });
+      }
+    });
+
     // 전체화면으로 표시
     vscode.commands.executeCommand("workbench.action.maximizeEditor").then(
       () => {},
@@ -66,13 +79,11 @@ export function createVideoOverlay() {
 
   const getWebviewContent = (webview: vscode.Webview): string => {
     const { language } = resolveLocale();
+    const nyanCatEnabled = isNyanCatEnabled();
 
     // webview 패키지의 dist 폴더 찾기
     const webviewPath = path.join(__dirname, "webview");
     const indexHtmlPath = path.join(webviewPath, "index.html");
-
-    console.log("Webview path:", webviewPath);
-    console.log("Index HTML path:", indexHtmlPath);
 
     // Read the built HTML file
     const fs = require("fs");
@@ -100,11 +111,11 @@ export function createVideoOverlay() {
       '<script type="module"',
       `<script>
         window.language = '${language}';
+        window.nyanCatEnabled = '${nyanCatEnabled}';
       </script>
       <script type="module"`
     );
 
-    console.log("Final HTML preview:", html.substring(0, 5000));
     return html;
   };
 

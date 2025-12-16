@@ -19,6 +19,22 @@ export function App({ language, vscode }: AppProps) {
   const [isSkipped, setIsSkipped] = useState(false);
   const [autoCloseCountdown, setAutoCloseCountdown] = useState(15);
   const [meme, setMeme] = useState(getRandomMeme(language));
+  const [nyanCatEnabled, setNyanCatEnabled] = useState(
+    window.nyanCatEnabled === "true"
+  );
+
+  useEffect(() => {
+    const eventListner = window.addEventListener("message", (event) => {
+      const message = event.data;
+
+      if (message.type === "config:init" || message.type === "config:update") {
+        setNyanCatEnabled(message.nyanCatEnabled === true);
+      }
+    });
+    return () => {
+      eventListner;
+    };
+  }, []);
 
   // Change meme every 3 seconds
   useEffect(() => {
@@ -83,7 +99,7 @@ export function App({ language, vscode }: AppProps) {
   return (
     <div className="m-0 p-0 overflow-hidden bg-linear-to-br from-[#0a0e27] via-[#1a1f3a] to-[#0f1419] flex justify-center items-center h-screen font-mono relative">
       <MatrixBackground chars={chars} />
-      <NyanCat />
+      {nyanCatEnabled && <NyanCat />}
 
       <div className="absolute top-0 left-0 w-full h-full bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.03)_2px,rgba(255,255,255,0.03)_4px),repeating-linear-gradient(90deg,transparent,transparent_2px,rgba(255,255,255,0.03)_2px,rgba(255,255,255,0.03)_4px)] z-1" />
 

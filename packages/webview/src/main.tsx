@@ -15,4 +15,7 @@ const vscode: VSCodeAPI | undefined =
 
 const language = window.language || "en";
 
-render(<App language={language} vscode={vscode} />, document.getElementById("app")!);
+render(
+  <App language={language} vscode={vscode} />,
+  document.getElementById("app")!
+);
