@@ -2,7 +2,7 @@
   "name": "jj-stretch",
   "displayName": "JJ Stretch",
   "description": "A VSCode extension that promotes healthy coding habits by reminding you to take stretch breaks at regular intervals with a fun terminal character.",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "publisher": "jingjing2222",
   "repository": {
     "type": "git",
