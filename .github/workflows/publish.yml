@@ -38,7 +38,7 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: v${{ steps.version.outputs.version }}
-          body_path: CHANGELOG.md
+          body_path: packages/extension/CHANGELOG.md
           files: 'packages/extension/*.vsix'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
