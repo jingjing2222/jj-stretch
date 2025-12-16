@@ -59,9 +59,6 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
-      webview:
-        specifier: workspace:*
-        version: link:../webview
 
   packages/webview:
     dependencies:
