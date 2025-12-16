@@ -2,7 +2,7 @@
   "name": "jj-stretch",
   "displayName": "JJ Stretch",
   "description": "A VSCode extension that promotes healthy coding habits by reminding you to take stretch breaks at regular intervals with a fun terminal character.",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "publisher": "jingjing2222",
   "repository": {
     "type": "git",
@@ -71,22 +71,19 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run package",
-    "compile": "pnpm run check-types && pnpm run lint && tsx esbuild.ts",
+    "build": "pnpm run check-types && pnpm run lint && tsx esbuild.ts",
+    "build:production": "pnpm run check-types && pnpm run lint && tsx esbuild.ts --production",
+    "package": "vsce package --allow-star-activation --no-dependencies",
+    "publish:vsce": "vsce publish --no-dependencies",
+    "publish:ovsx": "ovsx publish --no-dependencies",
+    "publish": "pnpm run publish:vsce && pnpm run publish:ovsx",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "tsx esbuild.ts --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "pnpm run check-types && pnpm run lint && tsx esbuild.ts --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "check-types": "tsc --noEmit",
-    "lint": "eslint src",
     "test": "vscode-test",
-    "build": "vsce package --allow-star-activation",
-    "publish:vsce": "vsce publish --no-dependencies",
-    "publish:ovsx": "ovsx publish --no-dependencies",
-    "publish": "pnpm run package && pnpm run publish:vsce && pnpm run publish:ovsx"
+    "pretest": "pnpm run build && pnpm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -104,24 +101,10 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.2"
   },
-  "dependencies": {
-    "webview": "workspace:*"
-  },
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977",
   "nx": {
     "targets": {
       "build": {
-        "dependsOn": [
-          "^build"
-        ],
-        "outputs": [
-          "{projectRoot}/dist"
-        ]
-      },
-      "compile": {
-        "dependsOn": [
-          "^build"
-        ],
         "outputs": [
           "{projectRoot}/dist"
         ]

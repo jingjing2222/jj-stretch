@@ -16,10 +16,6 @@ importers:
         version: 22.2.3
 
   packages/extension:
-    dependencies:
-      webview:
-        specifier: workspace:*
-        version: link:../webview
     devDependencies:
       '@types/mocha':
         specifier: ^10.0.10
@@ -65,10 +61,6 @@ importers:
         version: 5.9.3
 
   packages/webview:
-    dependencies:
-      preact:
-        specifier: ^10.27.2
-        version: 10.28.0
     devDependencies:
       '@preact/preset-vite':
         specifier: ^2.10.2
@@ -79,6 +71,9 @@ importers:
       '@types/node':
         specifier: ^24.10.1
         version: 24.10.4
+      preact:
+        specifier: ^10.27.2
+        version: 10.28.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18

@@ -6,10 +6,8 @@ on:
       - "main"
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -23,9 +21,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Get version
-        id: version
-        run: echo "version=$(node -p "require('./packages/extension/package.json').version")" >> $GITHUB_OUTPUT
-
-      - name: Build and package extension (webview + extension)
+      - name: Build and package extension
         run: pnpm package

@@ -27,17 +27,10 @@ jobs:
         id: version
         run: echo "version=$(node -p "require('./packages/extension/package.json').version")" >> $GITHUB_OUTPUT
 
-      - name: Build and package extension (webview + extension)
-        run: pnpm package
-
-      - name: Publish to VS Marketplace
-        run: pnpm --filter jj-stretch publish:vsce
+      - name: Build, package and publish extension
+        run: pnpm publish
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-
-      - name: Publish to Open VSX Registry
-        run: pnpm --filter jj-stretch publish:ovsx
-        env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
 
       - name: Create GitHub Release
