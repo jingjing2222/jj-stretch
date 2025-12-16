@@ -1,6 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
 import { MatrixBackground } from "./MatrixBackground";
 import { StretchAnimation } from "./StretchAnimation";
+import { NyanCat } from "./NyanCat";
 import { locales, matrixChars } from "../i18n/locales";
 import { getRandomMeme } from "../utils/memes";
 import type { VSCodeAPI } from "../types";
@@ -82,6 +83,7 @@ export function App({ language, vscode }: AppProps) {
   return (
     <div className="m-0 p-0 overflow-hidden bg-linear-to-br from-[#0a0e27] via-[#1a1f3a] to-[#0f1419] flex justify-center items-center h-screen font-mono relative">
       <MatrixBackground chars={chars} />
+      <NyanCat />
 
       <div className="absolute top-0 left-0 w-full h-full bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.03)_2px,rgba(255,255,255,0.03)_4px),repeating-linear-gradient(90deg,transparent,transparent_2px,rgba(255,255,255,0.03)_2px,rgba(255,255,255,0.03)_4px)] z-1" />
 
