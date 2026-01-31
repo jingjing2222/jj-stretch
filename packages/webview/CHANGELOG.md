@@ -1,5 +1,11 @@
 # webview
 
+## 1.0.11
+
+### Patch Changes
+
+- 7060dec: chore: unlicense
+
 ## 1.0.10
 
 ### Patch Changes
