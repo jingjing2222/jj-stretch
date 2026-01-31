@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -38,7 +40,7 @@ jobs:
           commit: 'chore: version packages'
           title: 'chore: version packages'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Create and push tag with v prefix
         if: steps.changesets.outputs.hasChangesets == 'false'
@@ -54,5 +56,3 @@ jobs:
             git tag "$TAG"
             git push origin "$TAG"
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
