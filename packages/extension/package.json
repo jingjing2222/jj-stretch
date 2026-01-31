@@ -4,6 +4,7 @@
   "description": "A VSCode extension that promotes healthy coding habits by reminding you to take stretch breaks at regular intervals with a fun terminal character.",
   "version": "1.0.10",
   "publisher": "jingjing2222",
+  "license": "Unlicense",
   "repository": {
     "type": "git",
     "url": "https://github.com/jingjing2222/jj-stretch"

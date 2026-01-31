@@ -2,6 +2,7 @@
   "name": "webview",
   "version": "1.0.10",
   "private": true,
+  "license": "Unlicense",
   "type": "module",
   "main": "./dist/index.html",
   "scripts": {

@@ -2,6 +2,7 @@
   "name": "jj-stretch-monorepo",
   "version": "1.0.9",
   "private": true,
+  "license": "Unlicense",
   "description": "JJ Stretch VSCode Extension - Monorepo",
   "scripts": {
     "build": "pnpm nx build webview && pnpm nx build jj-stretch",
